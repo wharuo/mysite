@@ -15,11 +15,41 @@
     }
     canvas {
       display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0; /* Mantém o canvas no fundo */
+    }
+    #system {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1; /* Mantém o sistema acima do canvas */
+      color: white;
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente */
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
+  
+  <!-- Sistema -->
+  <div id="system">
+    <h1>Bem-vindo ao Sistema</h1>
+    <p>Insira suas informações abaixo:</p>
+    <form>
+      <label for="username">Usuário:</label>
+      <input type="text" id="username" name="username"><br><br>
+      <label for="password">Senha:</label>
+      <input type="password" id="password" name="password"><br><br>
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
 
   <script>
     const canvas = document.getElementById("matrix");
