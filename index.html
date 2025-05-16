@@ -18,17 +18,17 @@
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 0; /* Mantém o canvas no fundo */
+      z-index: 0;
     }
     #system {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 1; /* Mantém o sistema acima do canvas */
+      z-index: 1;
       color: white;
       text-align: center;
-      background-color: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente */
+      background-color: rgba(0, 0, 0, 0.7);
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
@@ -37,12 +37,11 @@
 </head>
 <body>
   <canvas id="matrix"></canvas>
-  
   <!-- Sistema -->
   <div id="system">
     <h1>Bem-vindo ao Sistema</h1>
     <p>Insira suas informações abaixo:</p>
-    <form>
+    <form id="loginForm">
       <label for="username">Usuário:</label>
       <input type="text" id="username" name="username"><br><br>
       <label for="password">Senha:</label>
@@ -55,47 +54,56 @@
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
 
-    // Set canvas dimensions to match the window size
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const fontSize = 16; // Font size in pixels
+    let columns, drops;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / fontSize);
+      drops = Array.from({ length: columns }).fill(1);
+    }
+
+    // Initial canvas setup
+    resizeCanvas();
+
+    // Redraw canvas and reset drops array on window resize
+    window.addEventListener('resize', resizeCanvas);
 
     // Characters to display
     const letters = "ABCDEFGHIJKLMNOPQRSTUVXYZ0123456789";
     const lettersArray = letters.split("");
 
-    const fontSize = 16; // Font size in pixels
-    const columns = canvas.width / fontSize; // Number of columns based on canvas width
-
-    // Create an array to store the y-coordinate for each column
-    const drops = Array.from({ length: columns }).fill(1);
-
-    // Draw function for the Matrix effect
     function draw() {
-      // Black background with slight transparency for trail effect
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Set text color and font
       ctx.fillStyle = "#00ff00"; // Neon green
       ctx.font = `${fontSize}px monospace`;
 
-      drops.forEach((y, index) => {
+      for (let i = 0; i < drops.length; i++) {
         const text = lettersArray[Math.floor(Math.random() * lettersArray.length)];
-        const x = index * fontSize;
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
 
-        ctx.fillText(text, x, y * fontSize);
+        ctx.fillText(text, x, y);
 
-        // Randomly reset drop to the top
-        if (y * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[index] = 0;
+        if (y > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
         }
 
-        // Move the drop down
-        drops[index]++;
-      });
+        drops[i]++;
+      }
     }
 
-    setInterval(draw, 33); // Call the draw function every 33ms (~30fps)
+    setInterval(draw, 33);
+
+    // Prevent form from reloading the page
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      // Add your login logic here
+      alert('Login submitted! (Add your logic here)');
+    });
   </script>
 </body>
 </html>
